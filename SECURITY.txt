@@ -1,0 +1,33 @@
+LocalCam 0.7 security and release review - 2026-10-08
+
+Implemented:
+- Phone camera permission is requested after choosing Wi-Fi/USB, not on the welcome page.
+- Camera is unbound when the app leaves the foreground. No microphone or storage permission is requested by LocalCam.
+- USB launch extras are validated and require explicit phone confirmation; external apps cannot silently initiate capture through the exported launcher.
+- Wi-Fi pairing scans the PC's QR. Per-session TLS certificate SHA-256 pinning authenticates that exact computer. Cleartext traffic is prohibited on Android.
+- Phone uploads require a cryptographically generated bearer token. Reset pairing invalidates the active token. Pair attempts are limited per IP; tracking expires and has a fixed upper bound.
+- OBS and control/status routes are loopback-only. Loopback HTTP requests validate the host to prevent browser DNS rebinding. Cross-origin browser requests are rejected; control mutations require the desktop header.
+- Responses use no-store, nosniff and an OBS-compatible content security policy.
+- Latest JPEG is in RAM; LocalCam does not record, collect analytics, advertise or upload to DataKai. Preferences stay local, backup is disabled and pairing tokens are not persisted.
+
+Trust boundaries and remaining work:
+- The QR must come from a PC you trust. Local processes and OBS can read the intentionally accessible loopback stream. LocalCam is not isolation from other software on that PC.
+- This is a development security review, not an independent audit or a guarantee of Play approval.
+- Validate final merged permissions and dependencies; run device tests across Android 8 through 16, including denial/revocation, QR cancellation, USB intent injection, TLS mismatch and background capture shutdown.
+- Run longer 1080p tests with conversion/send counters. Adaptive compression can reduce JPEG quality; it does not promise 30 FPS or silently reduce resolution.
+
+Play release gates:
+1. API 36 target and 16KB native compatibility: APK ELF load segments and ZIP alignment verified. Physical 16KB device test remains required. Current API requirement: https://developer.android.com/google/play/requirements/target-sdk
+2. Signed release Android App Bundle and Play App Signing; development APK is not the store release. Store signing/upload keys outside source archives. No production key was created here.
+3. Publish the privacy page at a stable public HTTPS URL, confirm DataKai's privacy contact and complete Data Safety declarations against actual final code and SDKs. Do not assume local-only transmission automatically answers every Data Safety question.
+4. Confirm the permanent application ID with DataKai before the first upload; the development ID is org.localcam.app.
+5. Complete required Play Console testing, content rating, app-access instructions and screenshots. Review account-specific release requirements in the owner's Play Console.
+6. Keep unavailable features visibly labelled and disabled. 4K, hardware encoding, blur and direct virtual camera are roadmap items, not available capabilities.
+
+Policy references:
+https://support.google.com/googleplay/android-developer/answer/10144311
+https://developer.android.com/privacy-and-security/local-network-permission
+
+The product site is maintained/deployed separately by the owner. Final public privacy URL and contact still need verification before store release. No Play Console or Git account was accessed during development.
+
+Lint review: CustomX509TrustManager remains a warning because local ephemeral certificates use explicit leaf SHA-256 pinning instead of public CA/hostname authentication. The implementation checks certificate validity, rejects an empty chain and rejects a mismatched fingerprint using constant-time comparison. This needs independent review before store publication; the warning has not been suppressed. Remaining warnings include English UI strings, newer dependency versions, themed launcher icon and orientation guidance.

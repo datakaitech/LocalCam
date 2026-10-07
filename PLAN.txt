@@ -1,0 +1,36 @@
+LocalCam product plan — 2026-10-05
+
+Position: an open-source, locally operated phone webcam with Wi-Fi and USB, no required account, no watermark, and no subscription-gated features.
+
+Initial audience: OBS users, small creators, and open-source enthusiasts. Expand to everyday meeting users after installation and compatibility are dependable.
+
+Provisional first platforms: Android and Windows 11. Other platforms require their own camera, transport, and virtual-camera integration.
+
+Public MVP: one phone per computer; Wi-Fi and USB; QR/manual pairing; encrypted video; 720p30 baseline; tested 1080p30 on capable devices; front/rear controls; rotation and mirror; preview and status; direct virtual-camera output; reconnect; local installers.
+
+Development sequence:
+A. Transport experiments and usable preview — CURRENT
+B. Efficient codec transport and Windows virtual-camera spike
+C. Integrated MVP with pairing and recovery
+D. Installer, device matrix, sustained testing, tester feedback
+
+Release gates: operate with internet disconnected; test Wi-Fi and USB separately; unauthorized clients cannot pair/upload; revoke invalidates stream; OBS and selected meeting apps receive video; 60-minute stable sessions; measure latency and battery/thermal behavior.
+
+Infrastructure: no hosted runtime backend, database, login, video relay, or analytics required. Future download distribution is separate from camera operation. Website/domain, code signing, and store accounts may introduce distribution costs. Remote internet connectivity is outside this MVP.
+
+Local development only. Do not initialize or use existing Git accounts/remotes. Keep project artifacts within LocalCam.
+
+0.2 update: native Windows WPF receiver, sensor-driven Android orientation plus manual output correction, persistent encrypted upload, newest-frame queue, direct native preview and continuous OBS MJPEG.
+
+0.3 update: offline QR pairing now fills the IP, certificate fingerprint and code automatically; matching Android and Windows app branding added. Future pairing: remembered trusted devices and automatic USB discovery/setup. Preserve explicit first-device approval and local-only operation. USB debugging is a prototype transport, not the final consumer setup.
+0.5: DataKai ownership confirmed (datakai.in / local datakai-frontend reference). Phone connection landing (Wi-Fi QR or automatic adb USB pairing), direct source YUV crop/rotation/JPEG, zero-reencode desktop/OBS presentation, per-stage FPS diagnostics and local static product/download site. Sustained physical 30fps and hardware codec work remain release gates.
+
+0.6: Full phone view default with one-time framing migration; shared CameraX FIT viewport and cropRect handling; tiled YUV rotation; desktop layout reused between frames; separate conversion/send timings. Physical 720p30 remains an unverified release gate.
+
+0.7: Adaptive JPEG compression preserving resolution/FPS targets; mobile welcome and privacy page; Material-inspired controls on Android/Windows; disabled 4K and roadmap items; USB pairing consent, receiver browser protections; API 36 and 16KB native-library preparation. Sustained physical 1080p30 remains unverified.
+LOCALCAM 0.8 FOLLOW-UP
+Fullscreen phone preview with controls hidden, system bar handling and Back to exit.
+Portrait requests use CameraX target-rotation coordinates. Shared FIT viewport no longer follows UI bounds. Full phone view sends JPEG EXIF orientation instead of a costly per-frame YUV transpose; both receivers honor orientation.
+Audio is feasible but deferred: encoded transport, A/V sync, OBS playback, optional microphone consent/permission and privacy update required.
+Studio mode is deferred: query supported concurrent front/rear pairs and advertised resolution limits first; use hardware encoding before two feeds to avoid sacrificing single-camera performance. Separate authenticated OBS URLs are proposed, not implemented.
+Physical phone/OBS checks and sustained FPS measurements remain necessary.

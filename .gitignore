@@ -1,0 +1,51 @@
+# Generated builds and local toolchains
+**/bin/
+**/obj/
+**/build/
+**/.gradle/
+/.gradle-cache/
+/artifacts/
+/tools/
+**/node_modules/
+**/downloads/
+*.apk
+*.aab
+*.class
+*.dll
+*.exe
+*.pdb
+*.zip
+*.log
+*.tmp
+
+# SDK paths, IDE and machine-specific settings
+**/local.properties
+**/.idea/
+**/.vscode/
+*.iml
+*.user
+*.suo
+.DS_Store
+Thumbs.db
+
+# Credentials, signing material and local camera preferences
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+*.key
+**/secrets.json
+**/output-settings.json
+**/output-settings*.tmp
+
+# Generated test inputs (landscape.jpg is an intentional fixture)
+/scripts/tests/oriented-*.jpg
+/scripts/tests/pairing-qr.json
+/scripts/tests/pairing-qr.png
+
+# Website is maintained/deployed separately in ../localcam-website/website
+/website/

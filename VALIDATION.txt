@@ -1,0 +1,43 @@
+LocalCam 0.8 validation - 2026-10-08
+
+Windows 0.8.1 portrait clipping hotfix:
+PASS: reproduced clipping in the previous WPF layout-rotation/render-mirror combination with an opaque 1280x720 source in a portrait viewport.
+PASS: replacement production VideoLayout rasterizes 128 combinations of EXIF orientation, user rotation, mirror and Source/Fit or widescreen/Fill. Checks sample all four viewport corners and center, including portrait edges.
+Image sizing and centering now use raw/oriented dimensions explicitly in a Canvas. Rotation, mirror and zoom share one centered render transform; only the final viewport clips.
+Android remains 0.8. JPEG transport and OBS path are unchanged by this Windows-only hotfix. Physical phone verification remains necessary.
+
+0.8 checks: Windows build has zero warnings/errors. Android debug APK, unsigned release bundle and lint build pass (zero lint errors, warnings remain).
+PASS: Java generates all eight EXIF rotation/mirror tags with unchanged JPEG compressed payload; identity avoids allocation.
+PASS: those JPEGs decode in WPF; metadata parser handles truncated prefixes; all eight EXIF orientations compose correctly with four user rotations and two mirror settings.
+PASS: receiver preserves EXIF JPEG bytes across upload; OBS declares image-orientation:from-image. Existing transport, protected settings, Fit/Fill geometry and unchanged JPEG checks pass.
+Fullscreen has both a control-row entry and preview overlay entry, and Back exits it. Camera resize rebinding was removed; viewport and portrait target dimensions no longer depend on phone UI bounds.
+
+Earlier 0.7 regression results retained below; these are not all repeated for 0.8.
+
+PASS: Windows builds and production button-template instantiation, including disabled state.
+PASS: adaptive compression bounds, CPU and transport pressure, gradual recovery, selected quality ceiling and fixed-quality opt-out.
+PASS: receiver startup, pairing rejection, single-phone pairing, unauthorized uploads, JPEG validation, preview bytes, status, revoke protection and token invalidation.
+PASS: loopback host validation/DNS rebinding protection, cross-origin browser rejection, same-origin access, CSP and no-store.
+PASS: persistent TLS stream, split headers, cumulative upload >2 MiB, bounded/truncated frames, JPEG transport, OBS multipart, mid-stream revocation and certificate fingerprint.
+PASS: original JPEG unchanged across 20 display aspect/rotation combinations; protected output settings; uniform OBS Fit/Fill; mirror/rotation and disconnect blanking.
+PASS: Windows output-preference persistence, one-time crop migration, reset and invalid-file recovery.
+PASS: website/download HTTP checks, privacy page, SHA-256 integrity, missing-file handling, route tabs and keyboard navigation.
+PASS: Android API 36 APK build; development signature verifies. CameraX 1.4.2 packaged 64-bit libraries have >=16KB ELF alignment; APK ZIP alignment check passes.
+PASS: unsigned release Android App Bundle generated. It is preparation for release signing, not a publishable signed store release.
+
+PASS: final Android lint run, zero errors (warnings remain). Original API-28 executor calls on minSdk 26 were fixed using ContextCompat. Read the final lint report under android/app/build/reports. Known warnings include English UI strings, newer dependency versions, orientation guidance, themed launcher icon and custom certificate pinning. SECURITY.txt records the pinning review; the warning was not suppressed.
+
+Merged manifest: targetSdk 36, minSdk 26, only CAMERA and INTERNET permissions. Backup is disabled with explicit legacy/cloud/device-transfer exclusions; cleartext traffic is disabled. No audio, storage or location permission added.
+
+Physical/visual tests outstanding:
+- Fullscreen entry/exit/Back in landscape on a small phone; stream continuity while resizing.
+- Portrait at 720p/1080p: compare full scene with phone preview, timing/FPS and live OBS EXIF orientation during repeated physical rotation. Browser geometry tests do not prove MJPEG EXIF behaviour in a live OBS browser instance.
+- Android welcome flow, button contrast/touch targets, disabled 4K selection, small screens and rotation.
+- Camera permission denial/revocation; QR cancellation; USB confirmation/cancellation and intent injection; TLS pin mismatch; background capture shutdown.
+- 1080p adaptive quality versus fixed quality: conversion/send timings and capture/sent/received/preview FPS on Wi-Fi and USB, over sustained sessions.
+- Android 8-16 and a physical/emulated 16KB device, plus native Windows and OBS display.
+
+The Computer Use native pipe was unavailable (os error 2), so no live screenshot review was performed. Synthetic tests do not establish sustained 1080p30. Hardware video encoding, 4K, blur and independent virtual camera remain disabled roadmap items.
+Microphone audio and dual-camera Studio mode are also disabled planned features. No RECORD_AUDIO permission, microphone capture or dual-camera URLs were added.
+
+Security is improved, not independently audited. Store signing, verified public privacy policy/contact, Data Safety and Play Console release/testing gates remain. The owner maintains/deploys the website separately under ../localcam-website/website. No Git account or Play account was used by development tooling. Temporary receiver/site processes were stopped.

@@ -1,0 +1,67 @@
+LocalCam 0.8 - DataKai - full phone framing and pipeline diagnostics
+
+UPDATE BOTH APPS
+Windows 0.8.1 hotfix fixes narrow-strip portrait clipping when rotation and mirror combine. If Android is already 0.8, only close and replace/reopen the Windows app for this hotfix.
+Install artifacts/LocalCam-Android-debug.apk over your previous Android version.
+Open artifacts/desktop/LocalCam.Desktop.exe.
+Android now opens a welcome page. Tap Get started, then choose Wi-Fi or USB. Camera permission is requested after that choice.
+IP, key and code fields have been removed from the phone UI.
+
+WI-FI
+Choose Wi-Fi on both devices. On Windows choose the address on your shared network.
+Tap Scan PC QR on Android. Scanning connects automatically.
+Same local network is required; internet is not.
+Allow private-network TCP 8788 if Windows Firewall blocks the connection.
+Guest network isolation can prevent connections.
+
+USB
+Connect a USB data cable. Enable Android USB debugging and authorize the computer.
+Choose USB in Windows and Android. Click Connect Android over USB in Windows.
+LocalCam runs adb reverse and opens a confirmation on the phone. Tap Allow connection only if you initiated it on the PC you trust.
+No address/key/code entry is needed.
+This prototype needs Android platform-tools on the PC; the development machine already has them.
+The consumer USB transport and installer are later work.
+
+SOURCE FRAMING
+Tap Fullscreen in the camera controls or preview to view the phone camera without controls, including in landscape. Tap Exit fullscreen or press Android Back to restore controls.
+Android defaults to Full phone view. Keep it selected to send the full preview region.
+Windows defaults to Source + Fit + crop zoom 1x. Old framing preferences reset once on upgrade.
+Portrait remains portrait; turn the phone horizontally for landscape. Black bars preserve all the content.
+Optional Crop to... modes on Android and Fill/zoom on Windows deliberately remove edges.
+Both CameraX preview and capture share a viewport and requested resolution.
+
+PERFORMANCE
+Default capture target is 640 x 360 at 30 fps with balanced JPEG quality.
+Android encodes YUV directly, avoiding RGBA conversion and rotated bitmap allocations.
+Where supported, it asks the camera for the closest supported sensor FPS range.
+Windows never re-encodes frames for view settings; native/OBS rendering handles fit, fill, mirror, rotation and zoom.
+A fixed 30 fps cannot be guaranteed on every device, lighting condition or Wi-Fi network.
+Android shows capture/sent FPS, pack/rotate/JPEG milliseconds, last send time, Mbps and queued drops.
+Windows shows received and preview FPS. A 30 fps conversion budget is about 33 ms per frame.
+720p has four times the pixels of 360p; camera preview does not perform JPEG encoding or network sending.
+Check the timing readout to distinguish phone conversion from transport or Windows rendering limits.
+Full phone view now uses JPEG orientation metadata instead of rotating every frame's pixels. Update both apps and refresh OBS. Explicit crop modes still transform pixels.
+Test 360p first, then 720p. Keep the phone cool and the app foreground.
+Keep-screen-awake is enabled while streaming by default.
+
+1080P AND FUTURE FEATURES
+Adaptive compression is enabled by default. It adjusts JPEG quality between 40 and your chosen ceiling to reduce processing/network pressure, without changing resolution or target FPS.
+Watch the actual JPEG percentage in the phone's live readout. Disable Adaptive compression if you need fixed quality.
+Sustained physical 1080p30 still needs your device test; hardware encoding remains planned.
+4K is visible but disabled. Blur and direct Windows webcam are also clearly labelled future features.
+Microphone audio is Off / Planned and Studio mode is Planned. Neither captures audio nor starts a second camera. Audio sync/playback and hardware-dependent concurrent cameras need a separate implementation before they are usable.
+Privacy information is available on the Android welcome page and the separately maintained product website.
+SECURITY.txt lists release preparation and the remaining Play Store gates. This is still a development build.
+
+OBS
+Browser Source: http://127.0.0.1:8787/obs
+Refresh it after updating. Set its dimensions to match your chosen view (for example 1280 x 720 for 16:9).
+Clear old manual rotation transforms. Meeting apps currently use OBS Virtual Camera.
+LocalCam is not yet a standalone Windows webcam device.
+
+PRODUCT WEBSITE
+From ../localcam-website/website run node server.mjs, then open http://127.0.0.1:8900
+The static product site has real Windows, Android and source downloads.
+The website is maintained and deployed separately from this application source. Redeploy that website project after updating its files/downloads.
+Packaging writes artifacts/releases locally; pass -WebsiteRoot with the separate site's web root to refresh its downloads. The legacy website folder here is not maintained.
+Video operation does not require a hosted backend.
